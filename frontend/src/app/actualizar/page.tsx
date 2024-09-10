@@ -7,7 +7,7 @@ import Link from 'next/link'
 
 const RESPUESTA_INICIAL = { mensaje: "" };
 
-export function Home() {
+function Home() {
   // El estado del formulario
   const [formulario, setFormulario] = useState<AgregarCuentaRespuesta>(RESPUESTA_INICIAL);
 
@@ -61,3 +61,4 @@ export function Home() {
     </>
   );
 }
+export default Home;
