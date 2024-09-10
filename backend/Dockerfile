@@ -16,7 +16,7 @@ RUN npm install
 COPY . .
 
 # Expone el puerto en el que el backend escuchará
-EXPOSE 5000
+EXPOSE 3000
 
 # Comando para ejecutar la aplicación
 CMD ["npm", "start"]
