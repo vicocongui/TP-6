@@ -1,7 +1,7 @@
 # Backend Dockerfile
 
 # Usa una imagen base con Node.js
-FROM node:16
+FROM node:18.17
 
 # Define el directorio de trabajo
 WORKDIR /app
