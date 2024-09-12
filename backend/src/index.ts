@@ -5,7 +5,6 @@ dotenv.config();
 import cors from 'cors';
 
 const port = process.env.PORT || 5000;
-
 const app: Express = express();
 
 // Middleware para parsear el cuerpo de las solicitudes en formato JSON
