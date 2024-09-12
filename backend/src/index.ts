@@ -4,7 +4,7 @@ import { test, agregarCuenta, actualizarCuenta, generarContraseniaSegura, consul
 dotenv.config();
 import cors from 'cors';
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 const app: Express = express();
 
