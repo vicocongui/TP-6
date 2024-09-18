@@ -24,7 +24,7 @@ app.use((0, cors_1.default)());
 // Endpoint para descifrar la base de datos
 app.post("/admin/descifrar", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { clave } = req.body;
-    if (!clave) {
+    if (clave != process.env.SECRETKEY) {
         return res.status(400).send({ error: 'La clave es obligatoria' });
     }
     try {
@@ -53,9 +53,13 @@ app.post("/admin/cifrar", (req, res) => __awaiter(void 0, void 0, void 0, functi
 }));
 // Mostrar toda la información del usuario que lo solicita.
 app.post("/v1/listado", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { clave } = req.body;
+    if (clave != process.env.SECRETKEY) {
+        return res.status(400).send({ error: 'La clave es obligatoria' });
+    }
     try {
-        const listado = yield (0, Modelo_1.consultarListado)();
-        res.send(listado);
+        //const listado = await consultarListado();
+        res.send(yield (0, Modelo_1.consultarListado)(clave));
     }
     catch (error) {
         console.error("Error al consultar el listado de cuentas", error);

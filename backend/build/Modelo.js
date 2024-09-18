@@ -57,8 +57,8 @@ function abrirConexion() {
     });
 }
 // Encripta la base de datos y guarda el resultado en un archivo nuevo
-function cifrarBaseDeDatos() {
-    return __awaiter(this, arguments, void 0, function* (clave = secretKey) {
+function cifrarBaseDeDatos(clave) {
+    return __awaiter(this, void 0, void 0, function* () {
         try {
             const db = yield abrirConexion();
             const data = yield db.all('SELECT * FROM Cuenta');
@@ -75,8 +75,8 @@ function cifrarBaseDeDatos() {
     });
 }
 // Desencripta el archivo encriptado y lo guarda como un nuevo archivo de base de datos
-function descifrarBaseDeDatos() {
-    return __awaiter(this, arguments, void 0, function* (clave = secretKey) {
+function descifrarBaseDeDatos(clave) {
+    return __awaiter(this, void 0, void 0, function* () {
         try {
             const contenidoCifrado = fs.readFileSync('db.encrypted', 'utf8');
             const bytes = crypto_js_1.default.AES.decrypt(contenidoCifrado, clave);
@@ -105,12 +105,14 @@ function agregarCuenta(usuario, contrasenia, nombreWeb) {
     });
 }
 // Consulta el listado de cuentas
-function consultarListado() {
+function consultarListado(clave) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            yield descifrarBaseDeDatos(clave);
             const db = yield abrirConexion();
             const cuentas = yield db.all('SELECT * FROM Cuenta');
             yield db.close();
+            yield cifrarBaseDeDatos(clave);
             return cuentas;
         }
         catch (error) {

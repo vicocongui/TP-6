@@ -9,10 +9,9 @@ CREATE TABLE
 INSERT INTO
     Cuenta (usuario, contrasenia, nombreWeb)
 VALUES
-    ("Vico", "pepeespiola", "Google.com");
+    ('Vico', 'pepeespiola', 'Google.com');
 
 SELECT
     *
 FROM
     Cuenta;
-    
