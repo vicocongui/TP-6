@@ -22,43 +22,44 @@ function desencriptar(textoCifrado: string, contraseniaMaestra: string): string 
 
 // Función para agregar una cuenta con la contrasenia encriptada
 export async function agregarCuenta(nombreSitio: string, usuario: string, contrasenia: string, contraseniaMaestra: string) {
-    const db = await openDb();
-    const sitio = await db.get(`SELECT * FROM SitioWeb WHERE nombre = ?`, nombreSitio);
+    const db = await openDb();  // Abrir la base de datos
+    const sitio = await db.get(`SELECT * FROM SitioWeb WHERE nombre = ?`, nombreSitio);  // Buscar el sitio por nombre
 
     let sitioId: number;
 
     if (!sitio) {
+        // Si el sitio no existe, se crea uno nuevo
         const result = await db.run(`INSERT INTO SitioWeb (nombre) VALUES (?)`, nombreSitio);
         if (result && result.lastID !== undefined) {
-            sitioId = result.lastID;
+            sitioId = result.lastID;  // Obtener el ID del nuevo sitio creado
         } else {
             throw new Error('No se pudo insertar el sitio y obtener el ID.');
         }
     } else {
-        sitioId = sitio.id!;
+        sitioId = sitio.id!;  // Usar el ID del sitio existente
     }
 
-    const contraseniaEncriptada = encriptar(contrasenia, contraseniaMaestra);  // Encriptar con la contrasenia maestra
-    await db.run(`INSERT INTO Cuenta (sitioId, usuario, contrasenia) VALUES (?, ?, ?)`, sitioId, usuario, contraseniaEncriptada);
+    const contraseniaEncriptada = encriptar(contrasenia, contraseniaMaestra);  // Encriptar la contrasenia con la contrasenia maestra
+    await db.run(`INSERT INTO Cuenta (sitioId, usuario, contrasenia) VALUES (?, ?, ?)`, sitioId, usuario, contraseniaEncriptada);  // Insertar la cuenta en la base de datos
 }
 
 // Función para obtener una contrasenia desencriptada usando la contrasenia maestra
 export async function obtenercontrasenia(nombreSitio: string, usuario: string, contraseniaMaestra: string) {
     try {
-        const db = await openDb();
-        const sitio = await db.get(`SELECT * FROM SitioWeb WHERE nombre = ?`, nombreSitio);
+        const db = await openDb();  // Abrir la base de datos
+        const sitio = await db.get(`SELECT * FROM SitioWeb WHERE nombre = ?`, nombreSitio);  // Buscar el sitio por nombre
 
         if (sitio) {
-            const cuenta = await db.get(`SELECT * FROM Cuenta WHERE sitioId = ? AND usuario = ?`, sitio.id!, usuario);
+            const cuenta = await db.get(`SELECT * FROM Cuenta WHERE sitioId = ? AND usuario = ?`, sitio.id!, usuario);  // Buscar la cuenta por sitio y usuario
             if (cuenta) {
-                // Desencriptar usando la contrasenia maestra proporcionada por el usuario
+                // Desencriptar la contrasenia usando la contrasenia maestra proporcionada por el usuario
                 const contraseniaDesencriptada = desencriptar(cuenta.contrasenia, contraseniaMaestra);
-                return { tipo: "exito", encontrado: contraseniaDesencriptada };
+                return { tipo: "exito", encontrado: contraseniaDesencriptada };  // Devolver la contrasenia desencriptada
             }
         }
-        return { tipo: "no_encontrado" };
+        return { tipo: "no_encontrado" };  // Devolver "no encontrado" si la cuenta no existe
     } catch (error) {
-        // Verificar si el error es una instancia de Error para acceder a la propiedad `message`
+        // Manejar errores y devolver un mensaje de error
         const mensajeError = error instanceof Error ? error.message : 'Error desconocido al obtener la contrasenia';
         console.error('Error al obtener la contrasenia:', mensajeError);
         return { tipo: "error", mensaje: mensajeError };
