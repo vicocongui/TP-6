@@ -2,9 +2,9 @@
 
 ## Investigaciones
 
-### Cómo guardar contraseñas de manera segura
+### Cómo guardar contrasenias de manera segura
 
-Para cumplir con el requerimiento de guardar contraseñas de manera segura, el equipo realizó una investigación sobre técnicas de encriptación. Se optó por utilizar el algoritmo de encriptación AES (Advanced Encryption Standard) debido a que ofrece un cifrado sólido que es difícil de descifrar. Y se puede usar de forma sencilla mediante una librería.
+Para cumplir con el requerimiento de guardar contrasenias de manera segura, el equipo realizó una investigación sobre técnicas de encriptación. Se optó por utilizar el algoritmo de encriptación AES (Advanced Encryption Standard) debido a que ofrece un cifrado sólido que es difícil de descifrar. Y se puede usar de forma sencilla mediante una librería.
 
 #### Funcionamiento de AES
 
@@ -40,53 +40,53 @@ En caso de producirse algún error durante el proceso de encriptación, se captu
 
 La implementación de encriptación utilizando AES y CryptoJS fue seleccionada debido a su solidez y facilidad de uso. AES es ampliamente reconocido por su seguridad y eficiencia, mientras que CryptoJS proporciona una implementación confiable y bien documentada del algoritmo en JavaScript.
 
-Además, la función `encriptarArchivo` ofrece una solución simple y eficaz para encriptar el contenido de archivos de manera segura, cumpliendo con el requisito de almacenar contraseñas de forma privada y protegida.
+Además, la función `encriptarArchivo` ofrece una solución simple y eficaz para encriptar el contenido de archivos de manera segura, cumpliendo con el requisito de almacenar contrasenias de forma privada y protegida.
 
-Mediante esta implementación, se garantiza que las contraseñas almacenadas por la aplicación permanezcan seguras y privadas, brindando tranquilidad al usuario en cuanto a la confidencialidad de sus datos sensibles.
+Mediante esta implementación, se garantiza que las contrasenias almacenadas por la aplicación permanezcan seguras y privadas, brindando tranquilidad al usuario en cuanto a la confidencialidad de sus datos sensibles.
 
-## Generación de Contraseñas Seguras
+## Generación de contrasenias Seguras
 
-Para cumplir con la solicitud del usuario de generar contraseñas seguras, el equipo realizó una investigación sobre las características que hacen que una contraseña sea segura. Se identificaron las siguientes características mínimas:
+Para cumplir con la solicitud del usuario de generar contrasenias seguras, el equipo realizó una investigación sobre las características que hacen que una contrasenia sea segura. Se identificaron las siguientes características mínimas:
 
 - Longitud mínima de 12 caracteres.
 - Inclusión de caracteres en minúsculas, mayúsculas, números y caracteres especiales.
 
-Tras analizar diversas opciones y considerando las limitaciones de algunos sitios web que pueden no permitir ciertos caracteres especiales en las contraseñas, el equipo llegó a la conclusión de que una contraseña segura debería tener una longitud de al menos 16 caracteres y contener una combinación de caracteres en minúsculas, mayúsculas y números.
+Tras analizar diversas opciones y considerando las limitaciones de algunos sitios web que pueden no permitir ciertos caracteres especiales en las contrasenias, el equipo llegó a la conclusión de que una contrasenia segura debería tener una longitud de al menos 16 caracteres y contener una combinación de caracteres en minúsculas, mayúsculas y números.
 
-Esta decisión se basa en garantizar la seguridad de las contraseñas generadas, minimizando el riesgo de ataques de fuerza bruta y aumentando la complejidad de las mismas. Además, al evitar caracteres especiales, se reduce la posibilidad de problemas de compatibilidad con algunos sitios web que podrían no aceptar ciertos caracteres.
+Esta decisión se basa en garantizar la seguridad de las contrasenias generadas, minimizando el riesgo de ataques de fuerza bruta y aumentando la complejidad de las mismas. Además, al evitar caracteres especiales, se reduce la posibilidad de problemas de compatibilidad con algunos sitios web que podrían no aceptar ciertos caracteres.
 
 fuente: https://support.microsoft.com
 
 ## Función `generarContraseniaSegura`
 
-La función `generarContraseniaSegura` tiene como objetivo generar contraseñas seguras que cumplan con los estándares de seguridad establecidos por el equipo. A continuación, se detalla su funcionamiento:
+La función `generarContraseniaSegura` tiene como objetivo generar contrasenias seguras que cumplan con los estándares de seguridad establecidos por el equipo. A continuación, se detalla su funcionamiento:
 
 1. **Definición de parámetros**: La función no requiere ningún parámetro de entrada.
 
 2. **Expresión regular de caracteres permitidos**: Se define una expresión regular (`caracteresRegEx`) que incluye caracteres alfanuméricos en minúsculas y mayúsculas. Esta expresión se utilizará para validar los caracteres generados aleatoriamente.
 
-3. **Longitud de la contraseña**: Se establece que la longitud de la contraseña será de 16 caracteres, como se acordó con el equipo.
+3. **Longitud de la contrasenia**: Se establece que la longitud de la contrasenia será de 16 caracteres, como se acordó con el equipo.
 
-4. **Generación de la contraseña**: Se genera la contraseña utilizando un enfoque basado en bucles y aleatoriedad:
+4. **Generación de la contrasenia**: Se genera la contrasenia utilizando un enfoque basado en bucles y aleatoriedad:
 
-   - Se crea un array de longitud igual a la longitud especificada para la contraseña.
+   - Se crea un array de longitud igual a la longitud especificada para la contrasenia.
    - Se itera sobre cada elemento del array, generando un caracter aleatorio en cada iteración.
    - Se utiliza un bucle `do-while` para asegurarse de que el caracter generado cumpla con la expresión regular definida.
    - Se utiliza `String.fromCharCode` para generar un caracter aleatorio en el rango ASCII de caracteres imprimibles (33-126).
    - El bucle continúa generando caracteres hasta que se encuentre uno que cumpla con la expresión regular.
    - Una vez generados todos los caracteres, se concatenan en una cadena única utilizando el método `join`.
 
-5. **Retorno de la contraseña generada**: La función devuelve la contraseña generada como una cadena de caracteres.
+5. **Retorno de la contrasenia generada**: La función devuelve la contrasenia generada como una cadena de caracteres.
 
-Esta implementación garantiza que la contraseña generada sea segura y cumpla con los requisitos establecidos, proporcionando así una capa adicional de seguridad para las credenciales del usuario.
+Esta implementación garantiza que la contrasenia generada sea segura y cumpla con los requisitos establecidos, proporcionando así una capa adicional de seguridad para las credenciales del usuario.
 
-## Cómo saber si mi contraseña podría estar filtrada
+## Cómo saber si mi contrasenia podría estar filtrada
 
 La API v3 de Have I Been Pwned (HIBP) proporciona una forma rápida y sencilla de buscar si una cuenta específica ha sido comprometida en una brecha de seguridad en internet. Aquí hay un resumen de cómo funciona la API
 
 ### Descripción general de la API:
 
-La API v3 de HIBP tiene endpoints para buscar brechas de seguridad y pegados (pastes) asociados con una cuenta de correo electrónico o un dominio. También proporciona información sobre todas las brechas en el sistema y los detalles de una brecha específica. Además, ofrece acceso a la lista de contraseñas comprometidas conocida como "Pwned Passwords".
+La API v3 de HIBP tiene endpoints para buscar brechas de seguridad y pegados (pastes) asociados con una cuenta de correo electrónico o un dominio. También proporciona información sobre todas las brechas en el sistema y los detalles de una brecha específica. Además, ofrece acceso a la lista de contrasenias comprometidas conocida como "Pwned Passwords".
 
 ### Elección y justificación de la API:
 
@@ -112,23 +112,23 @@ La API v3 de HIBP fue elegida por su amplia cobertura de datos de brechas de seg
 
 #### Nota adicional sobre brechas y pastes:
 
-En el contexto de la seguridad informática, las "brechas" se refieren a eventos en los que se comprometen datos sensibles, como contraseñas o información personal, debido a vulnerabilidades en el sistema. Por otro lado, los "pastes" son datos que se publican en internet, que pueden contener información comprometida en brechas de seguridad o recopilada ilegalmente.
+En el contexto de la seguridad informática, las "brechas" se refieren a eventos en los que se comprometen datos sensibles, como contrasenias o información personal, debido a vulnerabilidades en el sistema. Por otro lado, los "pastes" son datos que se publican en internet, que pueden contener información comprometida en brechas de seguridad o recopilada ilegalmente.
 
-## Función `verificarContraseñaComprometida`
+## Función `verificarcontraseniaComprometida`
 
-La función `verificarContraseñaComprometida` tiene como objetivo verificar si una contraseña dada ha sido comprometida en una brecha de seguridad mediante la API de Have I Been Pwned (HIBP).
+La función `verificarcontraseniaComprometida` tiene como objetivo verificar si una contrasenia dada ha sido comprometida en una brecha de seguridad mediante la API de Have I Been Pwned (HIBP).
 
-1. **Definición de parámetros**: La función toma un parámetro de entrada `contraseña` de tipo `string`, que representa la contraseña que se va a verificar.
+1. **Definición de parámetros**: La función toma un parámetro de entrada `contrasenia` de tipo `string`, que representa la contrasenia que se va a verificar.
 
-2. **Llamada a la API de Have I Been Pwned**: Se utiliza la librería Axios para realizar una solicitud GET a la API de Have I Been Pwned, específicamente al endpoint `https://haveibeenpwned.com/api/v3/pwnedpassword/{contraseña}`. Se incluye el nombre de la aplicación en el encabezado del usuario (`user-agent`) para identificar la fuente de la solicitud (necesario).
+2. **Llamada a la API de Have I Been Pwned**: Se utiliza la librería Axios para realizar una solicitud GET a la API de Have I Been Pwned, específicamente al endpoint `https://haveibeenpwned.com/api/v3/pwnedpassword/{contrasenia}`. Se incluye el nombre de la aplicación en el encabezado del usuario (`user-agent`) para identificar la fuente de la solicitud (necesario).
 
-3. **Verificación de la respuesta**: Se verifica si la respuesta de la API tiene un estado (status) igual a 200, lo que indica que la contraseña ha sido encontrada en la base de datos de contraseñas comprometidas.
+3. **Verificación de la respuesta**: Se verifica si la respuesta de la API tiene un estado (status) igual a 200, lo que indica que la contrasenia ha sido encontrada en la base de datos de contrasenias comprometidas.
 
-4. **Retorno del resultado**: La función devuelve un valor booleano `true` si la contraseña está comprometida y `false` si no lo está.
+4. **Retorno del resultado**: La función devuelve un valor booleano `true` si la contrasenia está comprometida y `false` si no lo está.
 
 5. **Manejo de errores**: Se utiliza un bloque try-catch para manejar cualquier error que pueda ocurrir durante la llamada a la API. En caso de error, se muestra un mensaje de error en la consola y se devuelve `false`.
 
-Esta función proporciona una manera rápida y sencilla de verificar la seguridad de una contraseña frente a posibles brechas de seguridad en internet.
+Esta función proporciona una manera rápida y sencilla de verificar la seguridad de una contrasenia frente a posibles brechas de seguridad en internet.
 
 ### Elección de la Implementación
 
@@ -138,7 +138,7 @@ La elección de la API v3 de Have I Been Pwned (HIBP) se basa en su amplia cober
 
 Dado que el cliente especificó que se trata de una aplicación para un solo usuario y de su uso personal, el equipo comenzó definiendo dos interfaces principales: `Cuenta` y `SitioWeb`.
 
-- `Cuenta`: Ya que representa las credenciales de acceso a un sitio web (Usuario y contraseña)
+- `Cuenta`: Ya que representa las credenciales de acceso a un sitio web (Usuario y contrasenia)
 - `Sitio Web`: Contiene una lista de cuentas asociadas, ya que por cada sitio web el cliente especificó que puede tener una o más cuentas.
 
 Para gestionar estos datos, implementamos funciones de agregar, actualizar y borrar cuentas en la base de datos, como lo pide el clinte.
@@ -146,7 +146,7 @@ Para gestionar estos datos, implementamos funciones de agregar, actualizar y bor
 **Métodos que expone el modelo:**
 
 - `agregarCuenta`: Este método permite agregar una nueva cuenta a un sitio web existente o crear uno nuevo si no existe.
-- `actualizarCuenta`: Permite actualizar la contraseña de una cuenta específica en un sitio web dado.
+- `actualizarCuenta`: Permite actualizar la contrasenia de una cuenta específica en un sitio web dado.
 - `borrarCuenta`: Elimina una cuenta de un sitio web determinado.
 
 En los comentarios de cada funcion, se detalla lo que se espera que las funcionen hagan.
@@ -155,13 +155,13 @@ En los comentarios de cada funcion, se detalla lo que se espera que las funcione
 
 Para garantizar la seguridad de los datos almacenados, implementé una función `encriptarArchivo`. Esta función utiliza el algoritmo de cifrado AES para cifrar el contenido de un archivo de manera segura utilizando una clave secreta proporcionada por el usuario.
 
-**Generación de contraseñas seguras:**
+**Generación de contrasenias seguras:**
 
-Para generar contraseñas seguras, desarrollamos una función `generarContraseniaSegura`. Esta función crea contraseñas aleatorias que cumplen con los estándares de seguridad establecidos por el equipo, asegurando una combinación de caracteres alfanuméricos.
+Para generar contrasenias seguras, desarrollamos una función `generarContraseniaSegura`. Esta función crea contrasenias aleatorias que cumplen con los estándares de seguridad establecidos por el equipo, asegurando una combinación de caracteres alfanuméricos.
 
 Estas decisiones de modelado se basaron en la necesidad de garantizar la seguridad de las credenciales de los usuarios y la integridad de los datos almacenados.
 
-**Verificación de contraseñas:**
-Para implementar la verificación de contraseñas, decidimos utilizar un proceso de cron. Este proceso ejecutaría una tarea programada cada cierto tiempo (cada día) para verificar las contraseñas del usuario contra la base de datos de contraseñas comprometidas con al API haveibeenpwned.
+**Verificación de contrasenias:**
+Para implementar la verificación de contrasenias, decidimos utilizar un proceso de cron. Este proceso ejecutaría una tarea programada cada cierto tiempo (cada día) para verificar las contrasenias del usuario contra la base de datos de contrasenias comprometidas con al API haveibeenpwned.
 
-Además, el uso de un proceso de cron permite tomar medidasen caso de que se detecten contraseñas comprometidas. La aplicación debería notificar al usuario por gmail cuando una contraseña se encuentre comprometida
+Además, el uso de un proceso de cron permite tomar medidasen caso de que se detecten contrasenias comprometidas. La aplicación debería notificar al usuario por gmail cuando una contrasenia se encuentre comprometida
