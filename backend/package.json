@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.11",
     "@types/cors": "^2.8.17",
     "@types/crypto-js": "^4.2.2",
     "@types/express": "^4.17.21",
@@ -25,12 +26,10 @@
   },
   "dependencies": {
     "axios": "^1.7.2",
+    "better-sqlite3": "^11.3.0",
     "cors": "^2.8.5",
-    "crypto-js": "^4.2.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "mersenne-twister": "^1.1.0",
-    "sqlite": "^5.1.1",
-    "sqlite3": "^5.1.7"
+    "mersenne-twister": "^1.1.0"
   }
 }

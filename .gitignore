@@ -3,3 +3,4 @@ node_modules
 db.sqlite
 db.encrypted
 creardb.sql
+generatedb.ts

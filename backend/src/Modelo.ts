@@ -1,10 +1,13 @@
 import * as fs from 'fs';
-import CryptoJS from 'crypto-js';
+/* import CryptoJS from 'crypto-js';
 import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
+import { open } from 'sqlite'; */
 import axios from 'axios'
 
+import Database from 'better-sqlite3';
+
 export interface Cuenta {
+    id: number;
     usuario: string;
     contrasenia: string;
     nombreWeb: string;
@@ -13,15 +16,15 @@ export interface Cuenta {
 const secretKey = 'alagrandelepusecuca';
 
 // Abre una conexión a la base de datos SQLite
-async function abrirConexion() {
+/* async function abrirConexion() {
     return open({
         filename: 'db.sqlite',
         driver: sqlite3.Database
     });
-}
+} */
 
 // Encripta la base de datos y guarda el resultado en un archivo nuevo
-export async function cifrarBaseDeDatos(clave: string): Promise<void> {
+/* export async function cifrarBaseDeDatos(clave: string): Promise<void> {
     try {
         const db = await abrirConexion();
         const data = await db.all('SELECT * FROM Cuenta');
@@ -36,10 +39,10 @@ export async function cifrarBaseDeDatos(clave: string): Promise<void> {
     } catch (error) {
         console.error('Error al encriptar la base de datos:', error);
     }
-}
+} */
 
 // Desencripta el archivo encriptado y lo guarda como un nuevo archivo de base de datos
-export async function descifrarBaseDeDatos(clave: string): Promise<void> {
+/* export async function descifrarBaseDeDatos(clave: string): Promise<void> {
     try {
         const contenidoCifrado = fs.readFileSync('db.encrypted', 'utf8');
         const bytes = CryptoJS.AES.decrypt(contenidoCifrado, clave);
@@ -58,18 +61,18 @@ export async function descifrarBaseDeDatos(clave: string): Promise<void> {
     } catch (error) {
         console.error('Error al desencriptar la base de datos:', error);
     }
-}
+} */
 
 // Agrega una cuenta a la base de datos
-export async function agregarCuenta(usuario: string, contrasenia: string, nombreWeb: string): Promise<Cuenta> {
+/* export async function agregarCuenta(usuario: string, contrasenia: string, nombreWeb: string): Promise<Cuenta> {
     const db = await abrirConexion();
     await db.run('INSERT INTO Cuenta (usuario, contrasenia, nombreWeb) VALUES (?, ?, ?)', [usuario, contrasenia, nombreWeb]);
     await db.close();
     return { usuario, contrasenia, nombreWeb };
-}
+} */
 
 // Consulta el listado de cuentas
-export async function consultarListado(clave: string): Promise<Cuenta[]> {
+/* export async function consultarListado(clave: string): Promise<Cuenta[]> {
     try {
         await descifrarBaseDeDatos(clave);
         const db = await abrirConexion();
@@ -81,10 +84,33 @@ export async function consultarListado(clave: string): Promise<Cuenta[]> {
         console.error('Error al consultar el listado de cuentas:', error);
         return [];
     }
-}
+} */
 
-// Actualiza una cuenta en la base de datos
-export async function actualizarCuenta(nombreWeb: string, usuario: string, nuevaContrasenia: string): Promise<void> {
+// Definimos la interfaz para el tipo de dato "Cuenta"
+
+export async function consultarListado(clave: string): Promise<Cuenta[]> {
+    try {
+        // Abre la conexión a la base de datos
+        const db = new Database('db.sqlite');
+
+        // Aplica la clave de encriptación proporcionada por el usuario
+        db.exec(`PRAGMA key = '${clave}'`);  // Asigna la clave directamente en la consulta
+
+        // Realiza la consulta
+        const getStmt = db.prepare('SELECT * FROM Cuenta');
+        const cuentas: Cuenta[] = getStmt.all() as Cuenta[];  // Obtiene todos los elementos de la tabla 'Cuenta'
+
+        db.close();  // Cierra la conexión
+
+        return cuentas;
+    } catch (error) {
+        console.error('Error al consultar el listado de cuentas:', error);
+        throw error;  // Re-lanza el error para que el controlador lo capture
+    }
+}
+    
+// Actualiza una cuenta en la base de datos--------------------------------------------------------
+/* export async function actualizarCuenta(nombreWeb: string, usuario: string, nuevaContrasenia: string): Promise<void> {
     try {
         const db = await abrirConexion();
         await db.run('UPDATE Cuenta SET contrasenia = ? WHERE nombreWeb = ? AND usuario = ?', [nuevaContrasenia, nombreWeb, usuario]);
@@ -92,7 +118,7 @@ export async function actualizarCuenta(nombreWeb: string, usuario: string, nueva
     } catch (error) {
         console.error('Error al actualizar la cuenta:', error);
     }
-}
+} */
 
 // Genera una contraseña segura
 export const generarContraseniaSegura = (): string => {
