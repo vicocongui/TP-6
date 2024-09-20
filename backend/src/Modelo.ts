@@ -21,7 +21,7 @@ async function abrirConexion() {
 }
 
 // Encripta la base de datos y guarda el resultado en un archivo nuevo
-export async function cifrarBaseDeDatos(clave: string = secretKey): Promise<void> {
+export async function cifrarBaseDeDatos(clave: string): Promise<void> {
     try {
         const db = await abrirConexion();
         const data = await db.all('SELECT * FROM Cuenta');
@@ -39,7 +39,7 @@ export async function cifrarBaseDeDatos(clave: string = secretKey): Promise<void
 }
 
 // Desencripta el archivo encriptado y lo guarda como un nuevo archivo de base de datos
-export async function descifrarBaseDeDatos(clave: string = secretKey): Promise<void> {
+export async function descifrarBaseDeDatos(clave: string): Promise<void> {
     try {
         const contenidoCifrado = fs.readFileSync('db.encrypted', 'utf8');
         const bytes = CryptoJS.AES.decrypt(contenidoCifrado, clave);
@@ -69,11 +69,13 @@ export async function agregarCuenta(usuario: string, contrasenia: string, nombre
 }
 
 // Consulta el listado de cuentas
-export async function consultarListado(): Promise<Cuenta[]> {
+export async function consultarListado(clave: string): Promise<Cuenta[]> {
     try {
+        await descifrarBaseDeDatos(clave);
         const db = await abrirConexion();
         const cuentas = await db.all<Cuenta[]>('SELECT * FROM Cuenta');
         await db.close();
+        await cifrarBaseDeDatos(clave);
         return cuentas;
     } catch (error) {
         console.error('Error al consultar el listado de cuentas:', error);
