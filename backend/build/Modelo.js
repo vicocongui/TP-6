@@ -46,7 +46,8 @@ const crypto_js_1 = __importDefault(require("crypto-js"));
 const sqlite3_1 = __importDefault(require("sqlite3"));
 const sqlite_1 = require("sqlite");
 const axios_1 = __importDefault(require("axios"));
-const secretKey = 'alagrandelepusecuca';
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 // Abre una conexión a la base de datos SQLite
 function abrirConexion() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -99,21 +100,31 @@ function descifrarBaseDeDatos(clave) {
 function agregarCuenta(usuario, contrasenia, nombreWeb) {
     return __awaiter(this, void 0, void 0, function* () {
         const db = yield abrirConexion();
-        yield db.run('INSERT INTO Cuenta (usuario, contrasenia, nombreWeb) VALUES (?, ?, ?)', [usuario, contrasenia, nombreWeb]);
+        console.log("Contraseña sin encriptar", contrasenia);
+        const ciphertext = crypto_js_1.default.AES.encrypt(contrasenia, process.env.SECRETKEY).toString();
+        console.log("Contraseña encriptada", ciphertext);
+        yield db.run('INSERT INTO Cuenta (usuario, contrasenia, nombreWeb) VALUES (?, ?, ?)', [usuario, ciphertext, nombreWeb]);
         yield db.close();
-        return { usuario, contrasenia, nombreWeb };
+        //return { usuario, contrasenia, nombreWeb };
     });
 }
 // Consulta el listado de cuentas
-function consultarListado(clave) {
+function consultarListado(claveMaestra) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield descifrarBaseDeDatos(clave);
             const db = yield abrirConexion();
-            const cuentas = yield db.all('SELECT * FROM Cuenta');
+            // Obtener todas las cuentas desde la base de datos
+            const cuentasEncriptadas = yield db.all('SELECT * FROM Cuenta');
+            console.log("Cuentas con pw encrypted", cuentasEncriptadas);
+            // Desencriptar las contraseñas usando la clave maestra proporcionada por el usuario
+            const cuentasDesencriptadas = cuentasEncriptadas.map((cuenta) => {
+                const bytes = crypto_js_1.default.AES.decrypt(cuenta.contrasenia, claveMaestra);
+                const contraseniaDesencriptada = bytes.toString(crypto_js_1.default.enc.Utf8);
+                return Object.assign(Object.assign({}, cuenta), { contrasenia: contraseniaDesencriptada });
+            });
             yield db.close();
-            yield cifrarBaseDeDatos(clave);
-            return cuentas;
+            console.log("Cuentas con pw desencrypted", cuentasDesencriptadas);
+            return cuentasDesencriptadas;
         }
         catch (error) {
             console.error('Error al consultar el listado de cuentas:', error);
@@ -126,7 +137,10 @@ function actualizarCuenta(nombreWeb, usuario, nuevaContrasenia) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const db = yield abrirConexion();
-            yield db.run('UPDATE Cuenta SET contrasenia = ? WHERE nombreWeb = ? AND usuario = ?', [nuevaContrasenia, nombreWeb, usuario]);
+            console.log(nuevaContrasenia);
+            const newCiphertext = crypto_js_1.default.AES.encrypt(nuevaContrasenia, process.env.SECRETKEY).toString();
+            console.log(newCiphertext);
+            yield db.run('UPDATE Cuenta SET contrasenia = ? WHERE nombreWeb = ? AND usuario = ?', [newCiphertext, nombreWeb, usuario]);
             yield db.close();
         }
         catch (error) {

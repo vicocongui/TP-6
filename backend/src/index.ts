@@ -63,7 +63,7 @@ app.post("/v1/listado/add-account", async (req: Request, res: Response) => {
             return res.status(400).send({ error: 'Todos los campos son obligatorios' });
         }
         const nuevaCuenta = await agregarCuenta(usuario, generarContraseniaSegura(), nombreWeb);
-        res.status(201).send(nuevaCuenta);
+        res.status(200).send(nuevaCuenta);
     } catch (error) {
         console.error('Error al agregar la cuenta:', error);
         res.status(500).send({ error: 'Error al agregar la cuenta' });
@@ -77,8 +77,9 @@ app.put("/v1/usuario/update", async (req: Request, res: Response) => {
         return res.status(400).send({ error: 'Todos los campos son obligatorios' });
     }
     try {
-        await actualizarCuenta(nombreWeb, usuario, generarContraseniaSegura());
-        res.status(200).send({ message: "Contraseña actualizada con éxito" });
+        const contraseniaActualizada = await actualizarCuenta(nombreWeb, usuario, generarContraseniaSegura());
+        res.status(200).send(contraseniaActualizada);
+        //res.status(200).send({ message: "Contraseña actualizada con éxito" });
     } catch (error) {
         console.error('Error al actualizar la contraseña:', error);
         res.status(500).send({ error: 'Error al actualizar la cuenta' });

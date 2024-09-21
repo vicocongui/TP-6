@@ -74,7 +74,7 @@ app.post("/v1/listado/add-account", (req, res) => __awaiter(void 0, void 0, void
             return res.status(400).send({ error: 'Todos los campos son obligatorios' });
         }
         const nuevaCuenta = yield (0, Modelo_1.agregarCuenta)(usuario, (0, Modelo_1.generarContraseniaSegura)(), nombreWeb);
-        res.status(201).send(nuevaCuenta);
+        res.status(200).send(nuevaCuenta);
     }
     catch (error) {
         console.error('Error al agregar la cuenta:', error);
@@ -88,8 +88,9 @@ app.put("/v1/usuario/update", (req, res) => __awaiter(void 0, void 0, void 0, fu
         return res.status(400).send({ error: 'Todos los campos son obligatorios' });
     }
     try {
-        yield (0, Modelo_1.actualizarCuenta)(nombreWeb, usuario, (0, Modelo_1.generarContraseniaSegura)());
-        res.status(200).send({ message: "Contraseña actualizada con éxito" });
+        const contraseniaActualizada = yield (0, Modelo_1.actualizarCuenta)(nombreWeb, usuario, (0, Modelo_1.generarContraseniaSegura)());
+        res.status(200).send(contraseniaActualizada);
+        //res.status(200).send({ message: "Contraseña actualizada con éxito" });
     }
     catch (error) {
         console.error('Error al actualizar la contraseña:', error);

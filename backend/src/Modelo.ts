@@ -3,14 +3,15 @@ import CryptoJS from 'crypto-js';
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 import axios from 'axios'
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export interface Cuenta {
     usuario: string;
     contrasenia: string;
     nombreWeb: string;
 }
-
-const secretKey = 'alagrandelepusecuca';
 
 // Abre una conexión a la base de datos SQLite
 async function abrirConexion() {
@@ -61,22 +62,39 @@ export async function descifrarBaseDeDatos(clave: string): Promise<void> {
 }
 
 // Agrega una cuenta a la base de datos
-export async function agregarCuenta(usuario: string, contrasenia: string, nombreWeb: string): Promise<Cuenta> {
+export async function agregarCuenta(usuario: string, contrasenia: string, nombreWeb: string): Promise<void> {
     const db = await abrirConexion();
-    await db.run('INSERT INTO Cuenta (usuario, contrasenia, nombreWeb) VALUES (?, ?, ?)', [usuario, contrasenia, nombreWeb]);
+    console.log("Contraseña sin encriptar", contrasenia);
+    const ciphertext = CryptoJS.AES.encrypt(contrasenia, process.env.SECRETKEY!).toString();
+    console.log("Contraseña encriptada", ciphertext);
+    await db.run('INSERT INTO Cuenta (usuario, contrasenia, nombreWeb) VALUES (?, ?, ?)', [usuario, ciphertext, nombreWeb]);
     await db.close();
-    return { usuario, contrasenia, nombreWeb };
+    //return { usuario, contrasenia, nombreWeb };
 }
 
 // Consulta el listado de cuentas
-export async function consultarListado(clave: string): Promise<Cuenta[]> {
+export async function consultarListado(claveMaestra: string): Promise<Cuenta[]> {
     try {
-        await descifrarBaseDeDatos(clave);
         const db = await abrirConexion();
-        const cuentas = await db.all<Cuenta[]>('SELECT * FROM Cuenta');
+        
+        // Obtener todas las cuentas desde la base de datos
+        const cuentasEncriptadas = await db.all<Cuenta[]>('SELECT * FROM Cuenta');
+        console.log("Cuentas con pw encrypted", cuentasEncriptadas);
+        // Desencriptar las contraseñas usando la clave maestra proporcionada por el usuario
+        const cuentasDesencriptadas: Cuenta[] = cuentasEncriptadas.map((cuenta) => {
+            const bytes = CryptoJS.AES.decrypt(cuenta.contrasenia, claveMaestra);
+            const contraseniaDesencriptada = bytes.toString(CryptoJS.enc.Utf8);
+            
+            return {
+                ...cuenta,
+                contrasenia: contraseniaDesencriptada,  // Almacena la contraseña desencriptada
+            };
+        });
+
         await db.close();
-        await cifrarBaseDeDatos(clave);
-        return cuentas;
+        console.log("Cuentas con pw desencrypted", cuentasDesencriptadas);
+        return cuentasDesencriptadas;
+
     } catch (error) {
         console.error('Error al consultar el listado de cuentas:', error);
         return [];
@@ -87,7 +105,10 @@ export async function consultarListado(clave: string): Promise<Cuenta[]> {
 export async function actualizarCuenta(nombreWeb: string, usuario: string, nuevaContrasenia: string): Promise<void> {
     try {
         const db = await abrirConexion();
-        await db.run('UPDATE Cuenta SET contrasenia = ? WHERE nombreWeb = ? AND usuario = ?', [nuevaContrasenia, nombreWeb, usuario]);
+        console.log(nuevaContrasenia);
+        const newCiphertext = CryptoJS.AES.encrypt(nuevaContrasenia, process.env.SECRETKEY!).toString();
+        console.log(newCiphertext);
+        await db.run('UPDATE Cuenta SET contrasenia = ? WHERE nombreWeb = ? AND usuario = ?', [newCiphertext, nombreWeb, usuario]);
         await db.close();
     } catch (error) {
         console.error('Error al actualizar la cuenta:', error);
