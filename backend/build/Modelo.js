@@ -35,12 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generarContraseniaSegura = void 0;
-exports.cifrarBaseDeDatos = cifrarBaseDeDatos;
-exports.descifrarBaseDeDatos = descifrarBaseDeDatos;
-exports.agregarCuenta = agregarCuenta;
-exports.consultarListado = consultarListado;
-exports.actualizarCuenta = actualizarCuenta;
+exports.generarContraseniaSegura = exports.actualizarCuenta = exports.consultarListado = exports.agregarCuenta = exports.descifrarBaseDeDatos = exports.cifrarBaseDeDatos = void 0;
 const fs = __importStar(require("fs"));
 const crypto_js_1 = __importDefault(require("crypto-js"));
 const sqlite3_1 = __importDefault(require("sqlite3"));
@@ -75,6 +70,7 @@ function cifrarBaseDeDatos(clave) {
         }
     });
 }
+exports.cifrarBaseDeDatos = cifrarBaseDeDatos;
 // Desencripta el archivo encriptado y lo guarda como un nuevo archivo de base de datos
 function descifrarBaseDeDatos(clave) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -96,6 +92,7 @@ function descifrarBaseDeDatos(clave) {
         }
     });
 }
+exports.descifrarBaseDeDatos = descifrarBaseDeDatos;
 // Agrega una cuenta a la base de datos
 function agregarCuenta(usuario, contrasenia, nombreWeb) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -108,6 +105,7 @@ function agregarCuenta(usuario, contrasenia, nombreWeb) {
         //return { usuario, contrasenia, nombreWeb };
     });
 }
+exports.agregarCuenta = agregarCuenta;
 // Consulta el listado de cuentas
 function consultarListado(claveMaestra) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -132,6 +130,7 @@ function consultarListado(claveMaestra) {
         }
     });
 }
+exports.consultarListado = consultarListado;
 // Actualiza una cuenta en la base de datos
 function actualizarCuenta(nombreWeb, usuario, nuevaContrasenia) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -148,6 +147,7 @@ function actualizarCuenta(nombreWeb, usuario, nuevaContrasenia) {
         }
     });
 }
+exports.actualizarCuenta = actualizarCuenta;
 // Genera una contraseña segura
 const generarContraseniaSegura = () => {
     const caracteresRegEx = /[A-Za-z0-9]/;
