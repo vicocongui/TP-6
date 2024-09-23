@@ -21,46 +21,6 @@ async function abrirConexion() {
     });
 }
 
-// Encripta la base de datos y guarda el resultado en un archivo nuevo
-export async function cifrarBaseDeDatos(clave: string): Promise<void> {
-    try {
-        const db = await abrirConexion();
-        const data = await db.all('SELECT * FROM Cuenta');
-        await db.close();
-
-        const contenido = JSON.stringify(data); // Convierte los datos a JSON para la encriptación
-        const contenidoCifrado = CryptoJS.AES.encrypt(contenido, clave).toString();
-
-        fs.writeFileSync('db.encrypted', contenidoCifrado);
-        fs.unlinkSync('db.sqlite'); // Elimina el archivo original
-        console.log('Base de datos encriptada con éxito.');
-    } catch (error) {
-        console.error('Error al encriptar la base de datos:', error);
-    }
-}
-
-// Desencripta el archivo encriptado y lo guarda como un nuevo archivo de base de datos
-export async function descifrarBaseDeDatos(clave: string): Promise<void> {
-    try {
-        const contenidoCifrado = fs.readFileSync('db.encrypted', 'utf8');
-        const bytes = CryptoJS.AES.decrypt(contenidoCifrado, clave);
-        const contenidoDescifrado = bytes.toString(CryptoJS.enc.Utf8);
-
-        const data = JSON.parse(contenidoDescifrado); // Convierte los datos de JSON a un formato compatible con SQLite
-
-        const db = await abrirConexion();
-        await db.run('DELETE FROM Cuenta'); // Borra los datos existentes
-        for (const cuenta of data) {
-            await db.run('INSERT INTO Cuenta (usuario, contrasenia, nombreWeb) VALUES (?, ?, ?)', [cuenta.usuario, cuenta.contrasenia, cuenta.nombreWeb]);
-        }
-        await db.close();
-
-        console.log('Base de datos desencriptada con éxito.');
-    } catch (error) {
-        console.error('Error al desencriptar la base de datos:', error);
-    }
-}
-
 // Agrega una cuenta a la base de datos
 export async function agregarCuenta(usuario: string, contrasenia: string, nombreWeb: string): Promise<void> {
     const db = await abrirConexion();
@@ -100,6 +60,18 @@ export async function consultarListado(claveMaestra: string): Promise<Cuenta[]> 
         return [];
     }
 }
+
+export async function borrarCuenta(nombreWeb: string, usuario: string): Promise<void> {
+    try {
+        const db = await abrirConexion();
+        await db.run('DELETE FROM Cuenta WHERE nombreWeb = ? AND usuario = ?', [nombreWeb, usuario]);
+        await db.close();
+        console.log(`La cuenta para ${usuario} en ${nombreWeb} ha sido eliminada.`);
+    } catch (error) {
+        console.error('Error al borrar la cuenta:', error);
+    }
+}
+
 
 // Actualiza una cuenta en la base de datos
 export async function actualizarCuenta(nombreWeb: string, usuario: string, nuevaContrasenia: string): Promise<void> {

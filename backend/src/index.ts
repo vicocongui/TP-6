@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
-import { agregarCuenta, actualizarCuenta, generarContraseniaSegura, consultarListado, cifrarBaseDeDatos, descifrarBaseDeDatos } from "./Modelo";
+import { agregarCuenta, actualizarCuenta, generarContraseniaSegura, consultarListado, borrarCuenta } from "./Modelo";
 dotenv.config();
 import cors from 'cors';
 
@@ -9,36 +9,6 @@ const app: Express = express();
 
 app.use(express.json());
 app.use(cors());
-
-// Endpoint para descifrar la base de datos
-app.post("/admin/descifrar", async (req: Request, res: Response) => {
-    const { clave } = req.body;
-    if (clave != process.env.SECRETKEY) {
-        return res.status(400).send({ error: 'La clave es obligatoria' });
-    }
-    try {
-        await descifrarBaseDeDatos(clave);
-        res.status(200).send({ message: "Base de datos descifrada con éxito." });
-    } catch (error) {
-        console.error('Error al descifrar la base de datos:', error);
-        res.status(500).send({ error: 'Error al descifrar la base de datos' });
-    }
-});
-
-// Endpoint para cifrar la base de datos
-app.post("/admin/cifrar", async (req: Request, res: Response) => {
-    const { clave } = req.body;
-    if (!clave) {
-        return res.status(400).send({ error: 'La clave es obligatoria' });
-    }
-    try {
-        await cifrarBaseDeDatos(clave);
-        res.status(200).send({ message: "Base de datos cifrada con éxito." });
-    } catch (error) {
-        console.error('Error al cifrar la base de datos:', error);
-        res.status(500).send({ error: 'Error al cifrar la base de datos' });
-    }
-});
 
 // Mostrar toda la información del usuario que lo solicita.
 app.post("/v1/listado", async (req: Request, res: Response) => {
@@ -83,6 +53,22 @@ app.put("/v1/usuario/update", async (req: Request, res: Response) => {
     } catch (error) {
         console.error('Error al actualizar la contraseña:', error);
         res.status(500).send({ error: 'Error al actualizar la cuenta' });
+    }
+});
+
+// Borrar cuenta.
+app.delete("/v1/usuario/delete", async (req: Request, res: Response) => {
+    const { clave, usuario, nombreWeb } = req.body;
+    if (clave != process.env.SECRETKEY) {
+        return res.status(400).send({ error: 'La clave es obligatoria' });
+    }
+    try {
+        // Llama a la función que borra la cuenta si la contraseña es válida
+        await borrarCuenta(nombreWeb, usuario);
+        return res.status(200).json({ message: `La cuenta ${usuario} en ${nombreWeb} ha sido eliminada.` });
+    } catch (error) {
+        console.error("Error al eliminar cuenta", error);
+        res.status(500).send({ error: 'Error al eliminar cuenta' });
     }
 });
 

@@ -21,36 +21,6 @@ const port = process.env.PORT || 5000;
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
-// Endpoint para descifrar la base de datos
-app.post("/admin/descifrar", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { clave } = req.body;
-    if (clave != process.env.SECRETKEY) {
-        return res.status(400).send({ error: 'La clave es obligatoria' });
-    }
-    try {
-        yield (0, Modelo_1.descifrarBaseDeDatos)(clave);
-        res.status(200).send({ message: "Base de datos descifrada con éxito." });
-    }
-    catch (error) {
-        console.error('Error al descifrar la base de datos:', error);
-        res.status(500).send({ error: 'Error al descifrar la base de datos' });
-    }
-}));
-// Endpoint para cifrar la base de datos
-app.post("/admin/cifrar", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { clave } = req.body;
-    if (!clave) {
-        return res.status(400).send({ error: 'La clave es obligatoria' });
-    }
-    try {
-        yield (0, Modelo_1.cifrarBaseDeDatos)(clave);
-        res.status(200).send({ message: "Base de datos cifrada con éxito." });
-    }
-    catch (error) {
-        console.error('Error al cifrar la base de datos:', error);
-        res.status(500).send({ error: 'Error al cifrar la base de datos' });
-    }
-}));
 // Mostrar toda la información del usuario que lo solicita.
 app.post("/v1/listado", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { clave } = req.body;
@@ -95,6 +65,22 @@ app.put("/v1/usuario/update", (req, res) => __awaiter(void 0, void 0, void 0, fu
     catch (error) {
         console.error('Error al actualizar la contraseña:', error);
         res.status(500).send({ error: 'Error al actualizar la cuenta' });
+    }
+}));
+// Borrar cuenta.
+app.delete("/v1/usuario/delete", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { clave, usuario, nombreWeb } = req.body;
+    if (clave != process.env.SECRETKEY) {
+        return res.status(400).send({ error: 'La clave es obligatoria' });
+    }
+    try {
+        // Llama a la función que borra la cuenta si la contraseña es válida
+        yield (0, Modelo_1.borrarCuenta)(nombreWeb, usuario);
+        return res.status(200).json({ message: `La cuenta ${usuario} en ${nombreWeb} ha sido eliminada.` });
+    }
+    catch (error) {
+        console.error("Error al eliminar cuenta", error);
+        res.status(500).send({ error: 'Error al eliminar cuenta' });
     }
 }));
 app.listen(port, () => {
