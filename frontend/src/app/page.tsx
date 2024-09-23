@@ -1,63 +1,51 @@
 "use client";
 
 import { useState } from "react";
-import {
-  AgregarCuentaParams,
-  AgregarCuentaRespuesta,
-  agregarCuenta,
-} from "./utils";
+import { agregarCuenta } from "./utils"; // Usamos la función de agregarCuenta desde utils
 
 const RESPUESTA_INICIAL = { mensaje: "" };
 
 function Home() {
-  // Estado para manejar la respuesta del formulario
-  const [formulario, setFormulario] =
-    useState<AgregarCuentaRespuesta>(RESPUESTA_INICIAL);
+  const [formulario, setFormulario] = useState(RESPUESTA_INICIAL);
 
-  // La función que se llama al enviar el formulario
   const enviarFormulario = async (event: React.FormEvent<HTMLFormElement>) => {
-    // Prevenir el comportamiento predeterminado del formulario (refrescar la página)
     event.preventDefault();
 
-    // Recoger los datos del formulario
     const formData = new FormData(event.currentTarget);
     const nombreUsuario = formData.get("usuario")?.toString();
     const nombreCuenta = formData.get("nombreWeb")?.toString();
 
-    // Validar que los campos requeridos no estén vacíos
     if (!nombreUsuario || !nombreCuenta) {
       setFormulario({ mensaje: "Falta el nombre de la cuenta o del usuario!" });
     } else {
-      // Definir los parámetros para la API
-      const params: AgregarCuentaParams = {
-        claveMaestra: "alagrandelepusecuca",
-        usuario: nombreUsuario,
-        nombreWeb: nombreCuenta,
-      };
-
-      // Llamar a la función agregarCuenta y manejar la respuesta
       try {
-        const respuesta = await agregarCuenta(params);
-        setFormulario(respuesta);
+        const respuesta = await agregarCuenta(nombreUsuario, nombreCuenta); // Llamada al backend sin claveMaestra
+        setFormulario({
+          mensaje: `Cuenta agregada con éxito: ${respuesta.usuario}`,
+        });
       } catch (error) {
-        setFormulario({ mensaje: `Error al agregar la cuenta: ${error}` });
+        // Manejo explícito de errores de tipo `unknown`
+        if (error instanceof Error) {
+          setFormulario({
+            mensaje: `Error al agregar la cuenta: ${error.message}`,
+          });
+        } else {
+          setFormulario({
+            mensaje: "Error desconocido al agregar la cuenta.",
+          });
+        }
       }
     }
   };
 
-  // Componente JSX
   return (
     <div className="bg-zinc-950 rounded p-8">
       <h2 className="text-2xl font-bold mb-5">Agregar Cuenta</h2>
-
-      {/* Mostrar mensaje de éxito o error */}
       {formulario.mensaje && (
         <div role="alert" className="alert alert-info">
           <span>{formulario.mensaje}</span>
         </div>
       )}
-
-      {/* Formulario */}
       <form onSubmit={enviarFormulario}>
         <input
           name="usuario"
