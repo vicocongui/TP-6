@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { consultarListado } from "./utils"; // Usamos la función de agregarCuenta desde utils
-import  PopUpAgregar  from "../components/Login";
+
 
 const RESPUESTA_INICIAL = { mensaje: "" };
 
