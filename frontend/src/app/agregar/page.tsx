@@ -5,7 +5,7 @@ import { agregarCuenta } from "../utils"; // Importamos desde utils
 
 const RESPUESTA_INICIAL = { mensaje: "" };
 
-/*function Home() {
+function Home() {
   const [formulario, setFormulario] = useState(RESPUESTA_INICIAL);
 
   const enviarFormulario = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -68,4 +68,3 @@ const RESPUESTA_INICIAL = { mensaje: "" };
 }
 
 export default Home;
-*/

@@ -16,11 +16,11 @@ function Home() {
     const secretKey= formData.get("clave")?.toString();
 
 
-    if (secretKey != "alagrandelepusecuca") {
+    /*if (secretKey != "alagrandelepusecuca") {
       setFormulario({ mensaje: "Falta el nombre de la cuenta o del usuario!" });
-    } else {
+    } else {*/
       try {
-        const respuesta = await consultarListado(secretKey); // Llamada al backend sin claveMaestra
+        const respuesta = await consultarListado(secretKey!); // Llamada al backend sin claveMaestra
         setFormulario({
           mensaje: `holiss`,
         });
@@ -36,7 +36,6 @@ function Home() {
           });
         }
       }
-    }
   };
 
   return (
@@ -64,3 +63,4 @@ function Home() {
 }
 
 export default Home;
+
