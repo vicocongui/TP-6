@@ -48,8 +48,13 @@ function Home() {
   const redirigirABorrar = () => router.push("/borrar");
 
   return (
-    <div className="bg-zinc-950 rounded p-8">
-      <h2 className="text-2xl font-bold mb-5">Listado de Cuentas</h2>
+    <div className="bg-stone-200 rounded p-8">
+      <h1 className="mb-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl lg:text-6xl">
+        <span className="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
+          Todas tus
+        </span>{" "}
+        Cuentas
+      </h1>
 
       {formulario.mensaje && (
         <div role="alert" className="alert alert-info">
@@ -60,7 +65,7 @@ function Home() {
       {/* Mostramos el listado de cuentas con la contraseña desencriptada */}
       <ul className="mb-4">
         {listadoCuentas.map((cuenta, index) => (
-          <li key={index} className="text-white mb-2">
+          <li key={index} className="text-black dark:text-white  mb-2">
             <strong>Usuario:</strong> {cuenta.usuario} <br />
             <strong>Nombre Web:</strong> {cuenta.nombreWeb} <br />
             <strong>Contraseña:</strong> {cuenta.contrasenia}{" "}
