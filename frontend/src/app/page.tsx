@@ -6,19 +6,23 @@ import PopUpAgregar from "../components/Login";
 import { useRouter } from "next/navigation"; // Hook para redireccionar
 
 const RESPUESTA_INICIAL = { mensaje: "" };
+const ELEMENTOS_POR_PAGINA = 6; // Define cuántos elementos mostrar por página
 
 function Home() {
   const [claveMaestra, setClaveMaestra] = useState<string | null>(null);
   const [formulario, setFormulario] = useState(RESPUESTA_INICIAL);
-  const [listadoCuentas, setListadoCuentas] = useState<any[]>([]); // Estado para el listado de cuentas
+  const [listadoCuentas, setListadoCuentas] = useState<any[]>([]);
+  const [paginaActual, setPaginaActual] = useState(1); // Estado para la página actual
   const router = useRouter(); // Hook para la redirección
+
+  const totalPaginas = Math.ceil(listadoCuentas.length / ELEMENTOS_POR_PAGINA);
 
   // Efecto para cargar el listado de cuentas después de ingresar la clave maestra
   useEffect(() => {
     const cargarListado = async () => {
       if (claveMaestra) {
         try {
-          const cuentas = await consultarListado(claveMaestra); // Consulta el listado de cuentas
+          const cuentas = await consultarListado(claveMaestra);
           setListadoCuentas(cuentas);
         } catch (error) {
           if (error instanceof Error) {
@@ -35,7 +39,7 @@ function Home() {
     };
 
     cargarListado();
-  }, [claveMaestra]); // Se ejecuta cuando cambia la claveMaestra
+  }, [claveMaestra]);
 
   // Si no hay clave maestra, mostramos el modal de login
   if (!claveMaestra) {
@@ -46,6 +50,20 @@ function Home() {
   const redirigirAActualizar = () => router.push("/actualizar");
   const redirigirAAgregar = () => router.push("/agregar");
   const redirigirABorrar = () => router.push("/borrar");
+
+  // Calcular los elementos a mostrar según la página actual
+  const indiceInicial = (paginaActual - 1) * ELEMENTOS_POR_PAGINA;
+  const elementosActuales = listadoCuentas.slice(
+    indiceInicial,
+    indiceInicial + ELEMENTOS_POR_PAGINA
+  );
+
+  // Funciones para cambiar de página
+  const cambiarPagina = (pagina: number) => {
+    if (pagina > 0 && pagina <= totalPaginas) {
+      setPaginaActual(pagina);
+    }
+  };
 
   return (
     <div className="p-8">
@@ -60,11 +78,11 @@ function Home() {
 
         {/* Botones alineados a la derecha */}
         <div className="flex gap-2">
-          {/* Botón de agregar (verde) */}
           <button
             className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
             onClick={redirigirAAgregar}
           >
+            {/* SVG icono agregar */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="1em"
@@ -78,12 +96,11 @@ function Home() {
               />
             </svg>
           </button>
-
-          {/* Botón de actualizar (sky-400) */}
           <button
             className="bg-sky-400 hover:bg-sky-500 text-white font-bold py-2 px-4 rounded"
             onClick={redirigirAActualizar}
           >
+            {/* SVG icono actualizar */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="1em"
@@ -97,12 +114,11 @@ function Home() {
               />
             </svg>
           </button>
-
-          {/* Botón de borrar (rojo) */}
           <button
             className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
             onClick={redirigirABorrar}
           >
+            {/* SVG icono borrar */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="1em"
@@ -127,18 +143,33 @@ function Home() {
 
       {/* Usamos grid responsive para el listado de cuentas */}
       <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {listadoCuentas.map((cuenta, index) => (
+        {elementosActuales.map((cuenta, index) => (
           <li
             key={index}
             className="text-black border-gray-300 bg-gray-100 rounded border dark:text-white p-8 mb-2"
-            style={{ wordBreak: "break-word" }} // Evitar el desbordamiento del texto
+            style={{ wordBreak: "break-word" }}
           >
             <strong>Usuario:</strong> {cuenta.usuario} <br />
             <strong>Nombre Web:</strong> {cuenta.nombreWeb} <br />
-            <strong>Contraseña:</strong> {cuenta.contrasenia}{" "}
+            <strong>Contraseña:</strong> {cuenta.contrasenia}
           </li>
         ))}
       </ul>
+
+      {/* Paginador */}
+      <div className="join mt-4 flex justify-center">
+        {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((numero) => (
+          <button
+            key={numero}
+            className={`join-item btn ${
+              numero === paginaActual ? "btn-active" : ""
+            }`}
+            onClick={() => cambiarPagina(numero)}
+          >
+            {numero}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
