@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { agregarCuenta } from "./utils"; // Usamos la función de agregarCuenta desde utils
+import { consultarListado } from "./utils"; // Usamos la función de agregarCuenta desde utils
+import  PopUpAgregar  from "../components/Login";
 
 const RESPUESTA_INICIAL = { mensaje: "" };
 
@@ -12,16 +13,16 @@ function Home() {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
-    const nombreUsuario = formData.get("usuario")?.toString();
-    const nombreCuenta = formData.get("nombreWeb")?.toString();
+    const secretKey= formData.get("clave")?.toString();
 
-    if (!nombreUsuario || !nombreCuenta) {
+
+    if (secretKey != "alagrandelepusecuca") {
       setFormulario({ mensaje: "Falta el nombre de la cuenta o del usuario!" });
     } else {
       try {
-        const respuesta = await agregarCuenta(nombreUsuario, nombreCuenta); // Llamada al backend sin claveMaestra
+        const respuesta = await consultarListado(secretKey); // Llamada al backend sin claveMaestra
         setFormulario({
-          mensaje: `Cuenta agregada con éxito: ${respuesta.usuario}`,
+          mensaje: `holiss`,
         });
       } catch (error) {
         // Manejo explícito de errores de tipo `unknown`
@@ -40,7 +41,7 @@ function Home() {
 
   return (
     <div className="bg-zinc-950 rounded p-8">
-      <h2 className="text-2xl font-bold mb-5">Agregar Cuenta</h2>
+      <h2 className="text-2xl font-bold mb-5">Agregar contraseña secreta</h2>
       {formulario.mensaje && (
         <div role="alert" className="alert alert-info">
           <span>{formulario.mensaje}</span>
@@ -48,21 +49,14 @@ function Home() {
       )}
       <form onSubmit={enviarFormulario}>
         <input
-          name="usuario"
-          placeholder="Nombre del usuario..."
-          type="text"
-          className="input input-bordered w-full m-1 max-w-xs"
-          required
-        />
-        <input
-          name="nombreWeb"
-          placeholder="Nombre de la web..."
+          name="clave"
+          placeholder="constrasenia secrettaaa..."
           type="text"
           className="input input-bordered w-full m-1 max-w-xs"
           required
         />
         <button className="btn btn-primary m-1" type="submit">
-          Agregar
+          ingresa
         </button>
       </form>
     </div>

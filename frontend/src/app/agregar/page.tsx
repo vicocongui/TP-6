@@ -5,7 +5,7 @@ import { agregarCuenta } from "../utils"; // Importamos desde utils
 
 const RESPUESTA_INICIAL = { mensaje: "" };
 
-function Home() {
+/*function Home() {
   const [formulario, setFormulario] = useState(RESPUESTA_INICIAL);
 
   const enviarFormulario = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -21,7 +21,7 @@ function Home() {
       try {
         const respuesta = await agregarCuenta(nombreUsuario, nombreCuenta);
         setFormulario({
-          mensaje: `Cuenta agregada con éxito: ${respuesta.usuario}`,
+          mensaje: `Cuenta agregada con éxito`,
         });
       } catch (error) {
         // Manejo explícito de errores de tipo `unknown`
@@ -68,3 +68,4 @@ function Home() {
 }
 
 export default Home;
+*/
