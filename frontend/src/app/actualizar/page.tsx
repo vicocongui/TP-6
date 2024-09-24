@@ -21,7 +21,7 @@ function Home() {
       try {
         const respuesta = await actualizarCuenta(nombreUsuario, nombreCuenta);
         setFormulario({
-          mensaje: `Cuenta actualizada con éxito: ${respuesta.usuario}`,
+          mensaje: `Cuenta actualizada con éxito`,
         });
       } catch (error) {
         // Manejo explícito de errores de tipo `unknown`
