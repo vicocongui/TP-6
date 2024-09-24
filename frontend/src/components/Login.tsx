@@ -39,7 +39,7 @@ export default function PopUpAgregar(props: agregarProps) {
         <h2 className="text-xl text-black font-bold mb-4">Ingresar a App</h2>
         <p className="mb-4">Ingrese su clave maestra</p>
         <input
-          type="text"
+          type="password"
           value={clave}
           onChange={(e) => setClave(e.target.value)}
           className="mb-2 px-4 py-2 w-full bg-white border rounded"
