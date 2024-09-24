@@ -47,7 +47,7 @@ export async function consultarListado(claveMaestra: string): Promise<Cuenta[]> 
             
             return {
                 ...cuenta,
-                contrasenia: contraseniaDesencriptada,  // Almacena la contraseña desencriptada
+                contrasenia: contraseniaDesencriptada,  // Almacena la contraseña desencriptad
             };
         });
 
