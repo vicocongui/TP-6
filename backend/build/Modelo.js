@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generarContraseniaSegura = void 0;
+exports.generarContraseniaSegura = exports.verificarContrasenaEnHaveIBeenPwned = void 0;
 exports.agregarCuenta = agregarCuenta;
 exports.consultarListado = consultarListado;
 exports.borrarCuenta = borrarCuenta;
@@ -44,22 +44,49 @@ function agregarCuenta(usuario, contrasenia, nombreWeb) {
         //return { usuario, contrasenia, nombreWeb };
     });
 }
-// Consulta el listado de cuentas
+// Función para revisar si la contraseña ha sido expuesta en una violación de datos usando SHA-1 con CryptoJS
+const verificarContrasenaEnHaveIBeenPwned = (contrasena) => __awaiter(void 0, void 0, void 0, function* () {
+    // 1. Hashea la contraseña desencriptada usando SHA-1 (CryptoJS)
+    const sha1Hash = crypto_js_1.default.SHA1(contrasena).toString(crypto_js_1.default.enc.Hex).toUpperCase();
+    // 2. Envía los primeros 5 caracteres del hash SHA-1 a la API de HaveIBeenPwned
+    const prefix = sha1Hash.substring(0, 5);
+    const suffix = sha1Hash.substring(5);
+    try {
+        const response = yield axios_1.default.get(`https://api.pwnedpasswords.com/range/${prefix}`);
+        const hashes = response.data.split('\n');
+        // 3. Verifica si el hash completo está en los resultados de la API
+        const encontrado = hashes.some((hashLine) => {
+            const [hashSuffix, count] = hashLine.split(':');
+            return suffix === hashSuffix;
+        });
+        return encontrado
+            ? 'CONTRASEÑA COMPROMETIDA'
+            : 'CONTRASEÑA NO COMPROMETIDA';
+    }
+    catch (error) {
+        console.error('Error al verificar la contraseña en HaveIBeenPwned:', error);
+        throw new Error('No se pudo verificar la contraseña');
+    }
+});
+exports.verificarContrasenaEnHaveIBeenPwned = verificarContrasenaEnHaveIBeenPwned;
+// Función para consultar el listado de cuentas
 function consultarListado(claveMaestra) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const db = yield abrirConexion();
             // Obtener todas las cuentas desde la base de datos
             const cuentasEncriptadas = yield db.all('SELECT * FROM Cuenta');
-            console.log("Cuentas con pw encrypted", cuentasEncriptadas);
-            // Desencriptar las contraseñas usando la clave maestra proporcionada por el usuario
-            const cuentasDesencriptadas = cuentasEncriptadas.map((cuenta) => {
+            // Desencriptar las contraseñas y verificar si están comprometidas
+            const cuentasDesencriptadas = yield Promise.all(cuentasEncriptadas.map((cuenta) => __awaiter(this, void 0, void 0, function* () {
+                // Desencriptar la contraseña usando la clave maestra
                 const bytes = crypto_js_1.default.AES.decrypt(cuenta.contrasenia, claveMaestra);
                 const contraseniaDesencriptada = bytes.toString(crypto_js_1.default.enc.Utf8);
-                return Object.assign(Object.assign({}, cuenta), { contrasenia: contraseniaDesencriptada });
-            });
+                // Verificar si la contraseña ha sido comprometida usando la API de HaveIBeenPwned
+                const estadoContrasenia = yield (0, exports.verificarContrasenaEnHaveIBeenPwned)(contraseniaDesencriptada);
+                return Object.assign(Object.assign({}, cuenta), { contrasenia: contraseniaDesencriptada, // Contraseña desencriptada
+                    estadoContrasenia });
+            })));
             yield db.close();
-            console.log("Cuentas con pw desencrypted", cuentasDesencriptadas);
             return cuentasDesencriptadas;
         }
         catch (error) {
@@ -113,18 +140,16 @@ const generarContraseniaSegura = () => {
 };
 exports.generarContraseniaSegura = generarContraseniaSegura;
 // Verifica si la contraseña ha sido comprometida
-function verificarContraseniaComprometida(contrasenia) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const nombreAplicacion = 'SecurePassManager';
-            const response = yield axios_1.default.get(`https://haveibeenpwned.com/api/v3/pwnedpassword/${contrasenia}`, {
-                headers: { 'user-agent': nombreAplicacion }
-            });
-            return response.status === 200;
-        }
-        catch (error) {
-            console.error('Error al verificar la contraseña comprometida:', error);
-            return false;
-        }
-    });
+/*async function verificarContraseniaComprometida(contrasenia: string): Promise<boolean> {
+    try {
+        const nombreAplicacion = 'SecurePassManager';
+        const response = await axios.get(`https://haveibeenpwned.com/api/v3/pwnedpassword/${contrasenia}`, {
+            headers: { 'user-agent': nombreAplicacion }
+        });
+        return response.status === 200;
+    } catch (error) {
+        console.error('Error al verificar la contraseña comprometida:', error);
+        return false;
+    }
 }
+*/ 
