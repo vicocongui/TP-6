@@ -1,71 +1,86 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { consultarListado } from "./utils"; // Importamos la función de consultarListado
-import PopUpAgregar from "../components/Login"; // Importamos el componente de login
+import PopUpAgregar from "../components/Login";
+import { useRouter } from "next/navigation"; // Hook para redireccionar
 
 const RESPUESTA_INICIAL = { mensaje: "" };
 
 function Home() {
-  // Estados para la clave maestra y el formulario
   const [claveMaestra, setClaveMaestra] = useState<string | null>(null);
   const [formulario, setFormulario] = useState(RESPUESTA_INICIAL);
+  const [listadoCuentas, setListadoCuentas] = useState<any[]>([]); // Estado para el listado de cuentas
+  const router = useRouter(); // Hook para la redirección
 
-  const enviarFormulario = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const formData = new FormData(event.currentTarget);
-    const secretKey = formData.get("clave")?.toString();
-
-    if (secretKey !== process.env.SECRETKEY) {
-      setFormulario({ mensaje: "Clave incorrecta!" });
-    } else {
-      try {
-        const respuesta = await consultarListado(secretKey!);
-        setFormulario({
-          mensaje: `Clave ingresada correctamente.`,
-        });
-      } catch (error) {
-        // Manejo explícito de errores de tipo `unknown`
-        if (error instanceof Error) {
-          setFormulario({
-            mensaje: `Contraseña incorrecta :c`,
-          });
-        } else {
-          setFormulario({
-            mensaje: "Error desconocido al consultar el listado.",
-          });
+  // Efecto para cargar el listado de cuentas después de ingresar la clave maestra
+  useEffect(() => {
+    const cargarListado = async () => {
+      if (claveMaestra) {
+        try {
+          const cuentas = await consultarListado(claveMaestra); // Consulta el listado de cuentas
+          setListadoCuentas(cuentas);
+        } catch (error) {
+          if (error instanceof Error) {
+            setFormulario({
+              mensaje: `Error al cargar el listado: ${error.message}`,
+            });
+          } else {
+            setFormulario({
+              mensaje: "Error desconocido al cargar el listado.",
+            });
+          }
         }
       }
-    }
-  };
+    };
+
+    cargarListado();
+  }, [claveMaestra]); // Se ejecuta cuando cambia la claveMaestra
 
   // Si no hay clave maestra, mostramos el modal de login
   if (!claveMaestra) {
     return <PopUpAgregar setClaveMaestra={setClaveMaestra} />;
   }
 
-  // Si ya hay clave maestra, mostramos el contenido de la app
+  // Funciones para redirigir a las rutas de actualizar, agregar y borrar
+  const redirigirAActualizar = () => router.push("/actualizar");
+  const redirigirAAgregar = () => router.push("/agregar");
+  const redirigirABorrar = () => router.push("/borrar");
+
   return (
     <div className="bg-zinc-950 rounded p-8">
-      <h2 className="text-2xl font-bold mb-5">Agregar contraseña secreta</h2>
+      <h2 className="text-2xl font-bold mb-5">Listado de Cuentas</h2>
+
       {formulario.mensaje && (
         <div role="alert" className="alert alert-info">
           <span>{formulario.mensaje}</span>
         </div>
       )}
-      <form onSubmit={enviarFormulario}>
-        <input
-          name="clave"
-          placeholder="Ingresa tu contraseña secreta..."
-          type="text"
-          className="input input-bordered w-full m-1 max-w-xs"
-          required
-        />
-        <button className="btn btn-primary m-1" type="submit">
-          Ingresar
+
+      {/* Mostramos el listado de cuentas con la contraseña desencriptada */}
+      <ul className="mb-4">
+        {listadoCuentas.map((cuenta, index) => (
+          <li key={index} className="text-white mb-2">
+            <strong>Usuario:</strong> {cuenta.usuario} <br />
+            <strong>Nombre Web:</strong> {cuenta.nombreWeb} <br />
+            <strong>Contraseña:</strong> {cuenta.contrasenia}{" "}
+            {/* Contraseña desencriptada */}
+          </li>
+        ))}
+      </ul>
+
+      {/* Botones para acciones */}
+      <div className="flex gap-4">
+        <button className="btn btn-primary" onClick={redirigirAActualizar}>
+          Actualizar
         </button>
-      </form>
+        <button className="btn btn-secondary" onClick={redirigirAAgregar}>
+          Agregar
+        </button>
+        <button className="btn btn-danger" onClick={redirigirABorrar}>
+          Borrar
+        </button>
+      </div>
     </div>
   );
 }
