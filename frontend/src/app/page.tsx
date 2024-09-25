@@ -82,13 +82,11 @@ function Home() {
             className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
             onClick={redirigirAAgregar}
           >
-            {/* SVG icono agregar */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="1em"
               height="1em"
               viewBox="0 0 24 24"
-              fill="currentColor"
             >
               <path
                 fill="currentColor"
@@ -100,13 +98,11 @@ function Home() {
             className="bg-sky-400 hover:bg-sky-500 text-white font-bold py-2 px-4 rounded"
             onClick={redirigirAActualizar}
           >
-            {/* SVG icono actualizar */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="1em"
               height="1em"
               viewBox="0 0 24 24"
-              fill="currentColor"
             >
               <path
                 fill="currentColor"
@@ -118,13 +114,11 @@ function Home() {
             className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
             onClick={redirigirABorrar}
           >
-            {/* SVG icono borrar */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="1em"
               height="1em"
               viewBox="0 0 24 24"
-              fill="currentColor"
             >
               <path
                 fill="currentColor"

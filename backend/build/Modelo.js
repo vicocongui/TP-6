@@ -12,11 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generarContraseniaSegura = exports.verificarContrasenaEnHaveIBeenPwned = void 0;
-exports.agregarCuenta = agregarCuenta;
-exports.consultarListado = consultarListado;
-exports.borrarCuenta = borrarCuenta;
-exports.actualizarCuenta = actualizarCuenta;
+exports.generarContraseniaSegura = exports.actualizarCuenta = exports.borrarCuenta = exports.consultarListado = exports.verificarContrasenaEnHaveIBeenPwned = exports.agregarCuenta = void 0;
 const crypto_js_1 = __importDefault(require("crypto-js"));
 const sqlite3_1 = __importDefault(require("sqlite3"));
 const sqlite_1 = require("sqlite");
@@ -44,6 +40,7 @@ function agregarCuenta(usuario, contrasenia, nombreWeb) {
         //return { usuario, contrasenia, nombreWeb };
     });
 }
+exports.agregarCuenta = agregarCuenta;
 // Función para revisar si la contraseña ha sido expuesta en una violación de datos usando SHA-1 con CryptoJS
 const verificarContrasenaEnHaveIBeenPwned = (contrasena) => __awaiter(void 0, void 0, void 0, function* () {
     // 1. Hashea la contraseña desencriptada usando SHA-1 (CryptoJS)
@@ -95,6 +92,7 @@ function consultarListado(claveMaestra) {
         }
     });
 }
+exports.consultarListado = consultarListado;
 function borrarCuenta(nombreWeb, usuario) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -108,6 +106,7 @@ function borrarCuenta(nombreWeb, usuario) {
         }
     });
 }
+exports.borrarCuenta = borrarCuenta;
 // Actualiza una cuenta en la base de datos
 function actualizarCuenta(nombreWeb, usuario, nuevaContrasenia) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -124,6 +123,7 @@ function actualizarCuenta(nombreWeb, usuario, nuevaContrasenia) {
         }
     });
 }
+exports.actualizarCuenta = actualizarCuenta;
 // Genera una contraseña segura
 const generarContraseniaSegura = () => {
     const caracteresRegEx = /[A-Za-z0-9]/;
