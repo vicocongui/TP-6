@@ -6,7 +6,7 @@ import { initializeDb } from "./db"; // Importar la función para inicializar la
 
 dotenv.config();
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 const app: Express = express();
 
 app.use(express.json());
