@@ -78,6 +78,7 @@ app.delete("/v1/usuario/delete", async (req: Request, res: Response) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`[server]: Servidor iniciado en http://localhost:${port}`);
+app.listen(5000, '0.0.0.0', () => {
+    console.log(`[server]: Servidor iniciado en http://0.0.0.0:5000`);
 });
+
