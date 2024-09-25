@@ -14,7 +14,7 @@ services:
     build:
       context: ./backend
     ports:
-      - "5000:3000"
+      - "3000:3000"
     environment:
       - NODE_ENV=production
     restart: always
