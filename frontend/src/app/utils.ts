@@ -8,7 +8,7 @@ interface Cuenta {
 }
 
 // URL base del backend
-const BASE_URL = 'http://localhost:5000/v1';
+const BASE_URL = 'http://localhost:3000/v1';
 
 // Función para agregar una cuenta (POST)
 export const agregarCuenta = async (usuario: string, nombreWeb: string): Promise<Cuenta> => {
