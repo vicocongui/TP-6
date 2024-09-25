@@ -156,7 +156,7 @@ function Home() {
           <button
             key={numero}
             className={`join-item btn ${
-              numero === paginaActual ? "btn-active" : ""
+              numero === paginaActual ? "btn-active bg-sky-400" : ""
             }`}
             onClick={() => cambiarPagina(numero)}
           >

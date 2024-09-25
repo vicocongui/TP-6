@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+
 import CryptoJS from 'crypto-js';
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
@@ -136,18 +136,3 @@ export const generarContraseniaSegura = (): string => {
         })
         .join('');
 };
-
-// Verifica si la contraseña ha sido comprometida
-/*async function verificarContraseniaComprometida(contrasenia: string): Promise<boolean> {
-    try {
-        const nombreAplicacion = 'SecurePassManager';
-        const response = await axios.get(`https://haveibeenpwned.com/api/v3/pwnedpassword/${contrasenia}`, {
-            headers: { 'user-agent': nombreAplicacion }
-        });
-        return response.status === 200;
-    } catch (error) {
-        console.error('Error al verificar la contraseña comprometida:', error);
-        return false;
-    }
-}
-*/
