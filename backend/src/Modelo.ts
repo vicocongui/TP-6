@@ -25,9 +25,7 @@ async function abrirConexion() {
 // Agrega una cuenta a la base de datos
 export async function agregarCuenta(usuario: string, contrasenia: string, nombreWeb: string): Promise<void> {
     const db = await abrirConexion();
-    console.log("Contraseña sin encriptar", contrasenia);
     const ciphertext = CryptoJS.AES.encrypt(contrasenia, process.env.SECRETKEY!).toString();
-    console.log("Contraseña encriptada", ciphertext);
     await db.run('INSERT INTO Cuenta (usuario, contrasenia, nombreWeb) VALUES (?, ?, ?)', [usuario, ciphertext, nombreWeb]);
     await db.close();
     //return { usuario, contrasenia, nombreWeb };
@@ -111,9 +109,7 @@ export async function borrarCuenta(nombreWeb: string, usuario: string): Promise<
 export async function actualizarCuenta(nombreWeb: string, usuario: string, nuevaContrasenia: string): Promise<void> {
     try {
         const db = await abrirConexion();
-        console.log(nuevaContrasenia);
         const newCiphertext = CryptoJS.AES.encrypt(nuevaContrasenia, process.env.SECRETKEY!).toString();
-        console.log(newCiphertext);
         await db.run('UPDATE Cuenta SET contrasenia = ? WHERE nombreWeb = ? AND usuario = ?', [newCiphertext, nombreWeb, usuario]);
         await db.close();
     } catch (error) {
