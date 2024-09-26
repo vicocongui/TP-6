@@ -1,10 +1,11 @@
 import axios from 'axios';
 
 // Tipos para la respuesta de las cuentas
-interface Cuenta {
+export interface Cuenta {
     usuario: string;
     nombreWeb: string;
     contrasenia: string;
+    estadoContrasenia?: string;  // Nuevo campo para indicar si está comprometida o no
 }
 
 // URL base del backend
